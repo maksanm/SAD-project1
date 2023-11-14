@@ -1,13 +1,19 @@
 from os import path
 import pandas as pd
+import datetime as dt
 
 
 class DataLoader:
     def __init__(self, data_path):
-        self.unrate_adjusted_df = pd.read_csv(path.join(data_path, 'unrate_adjusted.csv'))
-        self.unrate_adjusted_df.columns = ['Date', 'Period', 'Rate']
-        self.unrate_adjusted_df['Date'] = pd.to_datetime(self.unrate_adjusted_df['Date'])
+        df = pd.read_csv(path.join(data_path, 'unrate_adjusted.csv'))
+        df.columns = ['Date', 'Period', 'Rate']
+        df['Date'] = pd.to_datetime(df['Date'])
+        df = df[(df['Date'] > dt.datetime(1997, 1, 1)) & (df['Date'] < dt.datetime(2023, 10, 1))]
+        self.unrate_adjusted_df = df
 
-        self.unrate_unadjusted_df = pd.read_csv(path.join(data_path, 'unrate_unadjusted.csv'))
-        self.unrate_unadjusted_df.columns = ['Date', 'Period', 'Rate']
-        self.unrate_unadjusted_df['Date'] = pd.to_datetime(self.unrate_unadjusted_df['Date'])
+        if path.exists(path.join(data_path, 'unrate_unadjusted.csv')):
+            df = pd.read_csv(path.join(data_path, 'unrate_unadjusted.csv'))
+            df.columns = ['Date', 'Period', 'Rate']
+            df['Date'] = pd.to_datetime(df['Date'])
+            df = df[(df['Date'] > dt.datetime(1997, 1, 1)) & (df['Date'] < dt.datetime(2023, 10, 1))]
+            self.unrate_unadjusted_df = df
